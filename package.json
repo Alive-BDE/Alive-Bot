@@ -1,0 +1,29 @@
+{
+  "name": "alive-bot",
+  "version": "0.0.0",
+  "description": "Bot Discord du BDE ALIVE",
+  "keywords": [
+    "discord"
+  ],
+  "homepage": "https://github.com/marechalg/Alive-Bot#readme",
+  "bugs": {
+    "url": "https://github.com/marechalg/Alive-Bot/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marechalg/Alive-Bot.git"
+  },
+  "license": "MIT",
+  "author": "Li Koubra",
+  "type": "module",
+  "main": "dist/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/main.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.25.1",
+    "dotenv": "^17.3.1"
+  }
+}
