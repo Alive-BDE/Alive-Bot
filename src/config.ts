@@ -12,7 +12,7 @@ if (!TOKEN) {
 }
 
 export default class Config {
-    static token: string | undefined = TOKEN;
+    static token: string = TOKEN!;
 
     static clientId: string = '1483204201042677941';
     static guildId: string = '1435971087434252340';

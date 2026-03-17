@@ -4,6 +4,9 @@ import fs from 'fs';
 import Config from './config';
 
 import { adlog } from './functions/functions';
+import { DiscordEvent } from './types/discord';
+
+process.on('unhandledRejection', (error: any) => adlog('error', 'node', error));
 
 console.clear(), adlog('log', 'node', 'Executing...');
 
@@ -14,13 +17,16 @@ const client: Client<boolean> = new Client({
     rest: {
         timeout: Config.timeout
     }
-})
+});
 
-try {
-    client.login(Config.token);
-} catch (error: any) {
-    adlog('error', 'discord', error);
-}
+(async () => {
+    try {
+        await client.login(Config.token);
+    } catch (error: any) {
+        adlog('error', 'discord', error);
+        process.exit(1);
+    }
+})();
 
 // Events Handler
 client.events = new Collection();
@@ -29,8 +35,8 @@ const eventsFiles: string[] = fs.readdirSync('src/events').filter(file => file.e
 adlog('log', 'info', `Loading ${eventsFiles.length} events...`);
 
 const eventsPromise = eventsFiles.map(eventFile =>
-    import(`./events/${eventFile}`).then(event => {
-        event = event.default ?? event;
+    import(`./events/${eventFile}`).then(module => {
+        const event: DiscordEvent = module.default ?? module;
 
         if ('name' in event && 'execute' in event) {
             if (event.once) {
