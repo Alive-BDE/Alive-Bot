@@ -18,5 +18,8 @@ export default class Config {
     static guildId: string = '1435971087434252340';
 
     static timeout: number = m(1);
-    static intents: number[] = [GatewayIntentBits.Guilds];
+    static intents: number[] = [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildScheduledEvents
+    ];
 }
