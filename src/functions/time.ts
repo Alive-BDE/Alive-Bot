@@ -10,4 +10,6 @@ function s(seconds: number) {
     return seconds * 1000;
 }
 
-export { h, m, s };
+const months: string[] = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+
+export { h, m, s, months };

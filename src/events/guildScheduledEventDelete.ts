@@ -1,19 +1,14 @@
-import { ActivityType, Client } from 'discord.js';
+import { ActivityType, Client, GuildScheduledEvent } from 'discord.js';
 import moment from 'moment';
 
-import Config from '../config';
-
-import { adlog, months } from '../functions/functions';
+import { months } from '../functions/functions';
 
 module.exports = {
-    name: 'clientReady',
-    once: true,
+    name: 'guildScheduledEventDelete',
+    once: false,
 
-    async execute(client: Client<true>) {
-        adlog('info', 'discord', `Connected to ${client.user.tag}`);
-
-        const server = await client.guilds.fetch(Config.guildId as string);
-        const events = await server.scheduledEvents.fetch();
+    async execute(oldEvent: GuildScheduledEvent, client: Client<true>) {
+        const events = await oldEvent.guild!.scheduledEvents.fetch();
         const event = events.sort((a, b) => a.scheduledStartTimestamp! - b.scheduledStartTimestamp!).first();
 
         client.user.setPresence({

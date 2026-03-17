@@ -26,6 +26,7 @@ try {
 client.events = new Collection();
 
 const eventsFiles: string[] = fs.readdirSync('src/events').filter(file => file.endsWith('.ts'));
+adlog('log', 'info', `Loading ${eventsFiles.length} events...`);
 
 const eventsPromise = eventsFiles.map(eventFile =>
     import(`./events/${eventFile}`).then(event => {
