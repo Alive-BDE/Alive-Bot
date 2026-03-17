@@ -13,9 +13,9 @@ jobs:
       - name: Deploy on server
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
+          host: ${{ secrets.PI_HOST }}
+          username: ${{ secrets.PI_USER }}
+          key: ${{ secrets.PI_SSH }}
           script: |
             cd /home/pi/bot
             git pull
