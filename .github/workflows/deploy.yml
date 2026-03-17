@@ -33,5 +33,5 @@ jobs:
             docker stop alive-bot || true
             docker rm alive-bot || true
             docker run -d --name alive-bot --restart unless-stopped \
-              -e DISCORD_TOKEN=${{ secrets.TOKEN }} \
+              -e TOKEN=${{ secrets.TOKEN }} \
               $IMAGE
