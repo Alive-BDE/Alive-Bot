@@ -16,6 +16,7 @@ jobs:
           host: ${{ secrets.PI_HOST }}
           username: ${{ secrets.PI_USER }}
           key: ${{ secrets.PI_SSH }}
+          port: 2222
           script: |
             cd /home/pi/bot
             git pull
