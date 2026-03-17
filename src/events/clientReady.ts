@@ -12,7 +12,7 @@ module.exports = {
     async execute(client: Client<true>) {
         adlog('info', 'discord', `Connected to ${client.user.tag}`);
 
-        const server = await client.guilds.fetch(Config.guildId as string);
+        const server = await client.guilds.fetch(Config.guildId);
         const events = await server.scheduledEvents.fetch();
         const event = events.sort((a, b) => a.scheduledStartTimestamp! - b.scheduledStartTimestamp!).first();
 
