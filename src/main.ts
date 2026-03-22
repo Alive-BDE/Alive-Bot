@@ -1,10 +1,10 @@
-import { Client, Collection } from 'discord.js';
+    import { Client, Collection, REST, Routes } from 'discord.js';
 import fs from 'fs';
 
 import Config from './config';
 
 import { adlog } from './functions/functions';
-import { DiscordEvent } from './types/discord';
+import { DiscordCommand, DiscordEvent } from './types/discord.d';
 
 process.on('unhandledRejection', (error: any) => adlog('error', 'node', error));
 
@@ -31,10 +31,10 @@ const client: Client<boolean> = new Client({
 // Events Handler
 client.events = new Collection();
 
-const eventsFiles: string[] = fs.readdirSync('src/events').filter(file => file.endsWith('.ts'));
-adlog('log', 'info', `Loading ${eventsFiles.length} events...`);
+const eventsFiles: string[] = fs.readdirSync('src/events').filter((file: string) => file.endsWith('.ts'));
+adlog('log', 'fs', `Loading ${eventsFiles.length} events...`);
 
-const eventsPromise = eventsFiles.map(eventFile =>
+const eventsPromise: Promise<void | DiscordEvent>[] = eventsFiles.map((eventFile: string) =>
     import(`./events/${eventFile}`).then(module => {
         const event: DiscordEvent = module.default ?? module;
 
@@ -53,5 +53,27 @@ const eventsPromise = eventsFiles.map(eventFile =>
 )
 
 Promise.all(eventsPromise).then(() => {
-    adlog('info', 'fs', `Loaded ${client.events.size} events (${client.events.map(event => event.name).join(', ')})`);
+    adlog('info', 'fs', `Loaded ${client.events.size} events`);
 })
+
+// Commands Handler
+const commandsFiles: string[] = fs.readdirSync('src/commands').filter((file: string) => file.endsWith('.ts'));
+adlog('log', 'fs', `Loadng ${commandsFiles.length} commands...`);
+
+client.commands = new Collection();
+
+const commandsPromise: Promise<void | DiscordCommand>[] = commandsFiles.map((commandFile: string) =>
+    import(`./commands/${commandFile}`).then(module => {
+        const command: DiscordCommand = module.default ?? module;
+
+        if ('data' in command && 'execute' in command) {
+            client.commands.set(command.data.name as string, command);
+        } else {
+            adlog('error', 'fs', `Missing data in ${commandFile} command`);
+        }
+    })
+)
+
+Promise.all(commandsPromise).then(() => {
+    adlog('info', 'fs', `Loaded ${client.commands.size} commands`);
+});

@@ -1,4 +1,4 @@
-import { ActivityType, Client } from 'discord.js';
+import { ActivityType, Client, REST, Routes } from 'discord.js';
 import moment from 'moment';
 
 import Config from '../config';
@@ -12,6 +12,7 @@ module.exports = {
     async execute(client: Client<true>) {
         adlog('info', 'discord', `Connected to ${client.user.tag}`);
 
+        // Setting presence
         const server = await client.guilds.fetch(Config.guildId);
         const events = await server.scheduledEvents.fetch();
         const event = events.sort((a, b) => a.scheduledStartTimestamp! - b.scheduledStartTimestamp!).first();
@@ -23,5 +24,18 @@ module.exports = {
                 type: ActivityType.Custom
             }]
         })
+
+        // Commands Registering
+        adlog('log', 'discord', `Registering ${client.commands.size} commands...`);
+
+        const rest = new REST({ version: '10' }).setToken(Config.token);
+        try {
+            const data = await rest.put(Routes.applicationCommands(Config.clientId), {
+                body: client.commands.map(command => command.data.toJSON())
+            }) as any[];
+            adlog('info', 'discord', `Registered ${data.length} commands`);
+        } catch (error: any) {
+            adlog('error', 'discord', error);
+        }
     }
 }
